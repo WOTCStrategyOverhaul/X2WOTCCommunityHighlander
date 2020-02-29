@@ -10,8 +10,12 @@ static function array<X2DataTemplate> CreateTemplates()
 	local array<X2DataTemplate> Templates;
 	local X2StrategyElementTemplate XComGameVersion;
 
+	`log("CreateTemplates",, 'DLC2CommunityHighlander');
+
 	if (class'CHXComGameVersionTemplate' != none)
 	{
+		`log("Creating CHDLC2Version with version" @ default.MajorVersion $ "." $ default.MinorVersion $ "." $ default.PatchVersion,, 'DLC2CommunityHighlander');
+
 		`CREATE_X2TEMPLATE(class'CHXComGameVersionTemplate', XComGameVersion, 'CHDLC2Version');
 		CHXComGameVersionTemplate(XComGameVersion).MajorVersion = default.MajorVersion;
 		CHXComGameVersionTemplate(XComGameVersion).MinorVersion = default.MinorVersion;
