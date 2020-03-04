@@ -55,7 +55,7 @@
         {
             "label": "makeDocs",
             "type": "shell",
-            "command": "python .\\.scripts\\make_docs.py .\\X2WOTCCommunityHighlander\\Src\\ .\\X2WOTCCommunityHighlander\\Config\\ --outdir .\\target\\",
+            "command": "python .\\.scripts\\make_docs.py .\\X2WOTCCommunityHighlander\\Src\\ .\\X2WOTCCommunityHighlander\\Config\\ --outdir .\\target\\ --docsdir .\\docs_src\\",
             "problemMatcher": []
         },
     ]
