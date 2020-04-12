@@ -49,6 +49,19 @@ function ModifyKismetGameState(out XComGameState GameState)
 {
 	// everything needs to wait for the matinee to complete
 	GameState.GetContext().SetVisualizationFence(true, 40.0f);
+
+	/// HL-Docs: feature:KismetGameStateMatinee; issue:837; tags:events
+	/// Allow mods to insert their logic next to matinees triggered by mission kismet,
+	/// by using `ELD_OnVisualizationBlockStarted`/`ELD_OnVisualizationBlockCompleted`
+	/// or `PreBuildVisualizationFn`/`PostBuildVisualizationFn`.
+	/// 
+	/// The triggering `SeqAct_PlayGameStateMatinee` is not passed as event data/source in order to 
+	/// avoid any potential issues with replays. Instead, you can fetch it using the following code:
+	/// 
+	/// ```unrealscript
+	/// XComGameStateContext_Kismet(GameState.GetContext()).FindSequenceOp()
+	/// ```
+	`XEVENTMGR.TriggerEvent('KismetGameStateMatinee',,, GameState); // Issue #837 - single line
 }
 
 function BuildVisualization(XComGameState GameState)
