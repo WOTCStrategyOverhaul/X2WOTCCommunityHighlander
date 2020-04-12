@@ -3758,34 +3758,183 @@ function bool MeetsAbilityPrerequisites(name AbilityName)
 	return true;
 }
 
+// Start helper methods for Issue #735
+function bool HasAnyOfTheAbilitiesFromInventory(array<name> AbilitiesToCheck)
+{
+	local array<XComGameState_Item> CurrentInventory;
+	local XComGameState_Item InventoryItem;
+	local X2EquipmentTemplate EquipmentTemplate;
+	local name Ability;
+
+	CurrentInventory = GetAllInventoryItems();
+	foreach CurrentInventory(InventoryItem)
+	{
+		EquipmentTemplate = X2EquipmentTemplate(InventoryItem.GetMyTemplate());
+		if (EquipmentTemplate != none)
+		{
+			foreach EquipmentTemplate.Abilities(Ability)
+			{
+				if (AbilitiesToCheck.Find(Ability) != INDEX_NONE)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+function bool HasAnyOfTheAbilitiesFromCharacterTemplate(array<name> AbilitiesToCheck)
+{
+	local name Ability;
+
+	foreach m_CharTemplate.Abilities(Ability)
+	{
+		if (AbilitiesToCheck.Find(Ability) != INDEX_NONE)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/// Checks if any of the abilities are present in the earned soldier abilities,
+/// granted by loadout items or the character template
+function bool HasAnyOfTheAbilitiesFromAnySource(array<name> AbilitiesToCheck)
+{
+	local bool bHasAbility;
+	local name Ability;
+
+	foreach AbilitiesToCheck(Ability)
+	{
+		if (HasSoldierAbility(Ability))
+		{
+			return true;
+		}
+	}
+
+	if (!bHasAbility)
+	{
+		bHasAbility = HasAnyOfTheAbilitiesFromInventory(AbilitiesToCheck);
+	}
+
+	if (!bHasAbility)
+	{
+		bHasAbility = HasAnyOfTheAbilitiesFromCharacterTemplate(AbilitiesToCheck);
+	}
+
+	return bHasAbility;
+}
+
+/// Checks if the ability is present in the earned soldier abilities,
+/// granted by loadout items or the character template
+function bool HasAbilityFromAnySource(name Ability)
+{
+	local array<name> AbilitiesToCheck;
+
+	AbilitiesToCheck.AddItem(Ability);
+	return HasAnyOfTheAbilitiesFromAnySource(AbilitiesToCheck);
+}
+
+function bool TriggerHasPocketOfTypeEvent(name EventID, bool bOverridePocketResult)
+{
+	local XComLWTuple Tuple;
+
+	Tuple = new class'XComLWTuple';
+	Tuple.Id = EventID;
+	Tuple.Data.Add(1);
+	Tuple.Data[0].kind = XComLWTVBool;
+	Tuple.Data[0].b = bOverridePocketResult;
+
+	`XEVENTMGR.TriggerEvent(EventID, Tuple, self, none);
+
+	return Tuple.Data[0].b;
+}
+// End methods for Issue #735
+
+/// HL-Docs: feature:OverrideHasGrenadePocket; issue:735; tags:loadoutslots,strategy
+/// Extends the ability check in `HasGrenadePocket()` for the config array `AbilityUnlocksGrenadePocket` (`XComGameData.ini`) to item granted abilities
+/// and abilities granted by the character template.
+/// Finally the event OverrideHasGrenadePocket is triggered that allows mods to override the final result
+///
+/// ```unrealscript
+/// EventID: OverrideHasGrenadePocket
+/// EventData: XComLWTuple {
+/// 	Data: [
+/// 	  inout bool bHasGrenadePocket
+///     ]
+/// }
+/// EventSource: XComGameState_Unit
+/// NewGameState: no
+/// ```
 function bool HasGrenadePocket()
 {
 	local name CheckAbility;
 
-	foreach class'X2AbilityTemplateManager'.default.AbilityUnlocksGrenadePocket(CheckAbility)
-	{
-		if (HasSoldierAbility(CheckAbility))
-			return true;
-	}
-	return false;
+	// Variables for Issue #735 (1/3)
+	local bool bHasGrenadePocket;
+	// End Variables for Issue #735 (1/3)
+
+	// Start Issue #735 (1/3)
+	bHasGrenadePocket = HasAnyOfTheAbilitiesFromAnySource(class'X2AbilityTemplateManager'.default.AbilityUnlocksGrenadePocket);
+
+	return TriggerHasPocketOfTypeEvent('OverrideHasGrenadePocket', bHasGrenadePocket);
+	// End Issue #735 (1/3)
 }
 
+/// HL-Docs: feature:OverrideHasAmmoPocket; issue:735; tags:loadoutslots,strategy
+/// Extends the ability check in `HasAmmoPocket()` for the config array `AbilityUnlocksAmmoPocket` (`XComGameData.ini`) to item granted abilities
+/// and abilities granted by the character template.
+/// Finally the event OverrideHasAmmoPocket is triggered that allows mods to override the final result
+///
+/// ```unrealscript
+/// EventID: OverrideHasAmmoPocket
+/// EventData: XComLWTuple {
+/// 	Data: [
+/// 	  inout bool bHasAmmoPocket
+///     ]
+/// }
+/// EventSource: XComGameState_Unit
+/// NewGameState: no
+/// ```
 function bool HasAmmoPocket()
 {
 	local name CheckAbility;
 
-	foreach class'X2AbilityTemplateManager'.default.AbilityUnlocksAmmoPocket(CheckAbility)
-	{
-		if (HasSoldierAbility(CheckAbility))
-			return true;
-	}
-	return false;
+	// Variables for Issue #735 (2/3)
+	local bool bHasAmmoPocket;
+	// End Variables for Issue #735 (2/3)
+
+	// Start Issue #735 (2/3)
+	bHasAmmoPocket = HasAnyOfTheAbilitiesFromAnySource(class'X2AbilityTemplateManager'.default.AbilityUnlocksAmmoPocket);
+
+	return TriggerHasPocketOfTypeEvent('OverrideHasAmmoPocket', bHasAmmoPocket);
+	// End Issue #735 (2/3)
 }
 
 // Check is for squad select UI
+/// HL-Docs: feature:OverrideHasExtraUtilitySlot; issue:735; tags:loadoutslots,strategy
+/// Extends the ability check in `HasExtraUtilitySlot()` for the config array `AbilityUnlocksExtraUtilitySlot` (`XComGameData.ini`) to item granted abilities
+/// and abilities granted by the character template.
+/// Finally the event OverrideHasExtraUtilitySlot is triggered that allows mods to override the final result
+///
+/// ```unrealscript
+/// EventID: OverrideHasExtraUtilitySlot
+/// EventData: XComLWTuple {
+/// 	Data: [
+/// 	  inout bool bHasExtraUtilitySlot
+///     ]
+/// }
+/// EventSource: XComGameState_Unit
+/// NewGameState: no
+/// ```
 function bool HasExtraUtilitySlot()
 {
 	local XComGameState_Item ItemState;
+
+	// Variables for Issue #735 (3/3)
+	local bool bHasExtraUtilitySlot;
+	// End Variables for Issue #735 (3/3)
 
 	// Some units start without utility slots
 	if(GetCurrentStat(eStat_UtilityItems) <= 1.0f)
@@ -3793,15 +3942,28 @@ function bool HasExtraUtilitySlot()
 		return false;
 	}
 
+	// Start Issue #735 (3/3)
 	if (HasExtraUtilitySlotFromAbility())
-		return true;
-
-	ItemState = GetItemInSlot(eInvSlot_Armor);
-	if (ItemState != none)
 	{
-		return X2ArmorTemplate(ItemState.GetMyTemplate()).bAddsUtilitySlot;
+		bHasExtraUtilitySlot = true;
 	}
-	return false;
+
+	if (!bHasExtraUtilitySlot)
+	{
+		ItemState = GetItemInSlot(eInvSlot_Armor);
+		if (ItemState != none)
+		{
+			bHasExtraUtilitySlot = X2ArmorTemplate(ItemState.GetMyTemplate()).bAddsUtilitySlot;
+		}
+	}
+	
+	if (!bHasExtraUtilitySlot)
+	{
+		bHasExtraUtilitySlot = HasAnyOfTheAbilitiesFromAnySource(class'X2AbilityTemplateManager'.default.AbilityUnlocksExtraUtilitySlot);
+	}
+
+	return TriggerHasPocketOfTypeEvent('OverrideHasExtraUtilitySlot', bHasExtraUtilitySlot);
+	// End Issue #735 (3/3)
 }
 
 function bool HasExtraUtilitySlotFromAbility()
@@ -6065,37 +6227,97 @@ event TakeDamage( XComGameState NewGameState, const int DamageAmount, const int 
 	PostShield_DamageAmount = DamageAmount;
 	PostShield_ShredAmount = ShredAmount;
 	DamageAbsorbedByShield = 0;
-	if ((ShieldHP > 0) && !bIgnoreShields) //If there is a shield, then shield should take all damage from both armor and hp, before spilling back to armor and hp
+
+	// Begin Issue #743
+	/// HL-Docs: feature:DamageCalc_ArmorBeforeShield; issue:743; tags:tactical
+	/// By default, shields are damaged before any damage is mitigated by armor.
+	/// This is fine in vanilla when shields are rare, but becomes an issue in
+	/// modded campaigns where 'shields' are turned into 'ablative' hit points
+	/// that provide a buffer before units become wounded and suffer red fog.
+	/// Increasing ablative is often a non-optimal choice because it can make
+	/// the the soldier's armor pips become redundant. 
+	/// 
+	/// This change adds an optional config variable (XComGameCore.ini) that 
+	/// other mods or the player can enable. When enabled, it changes the `TakeDamage`
+	/// event inside `XComGameState_Unit` to handle armor mitigation and apply any
+	/// shredding to the armor before moving on to shields. Shield-bypassing damage such
+	/// as Psi or EMP damage behaves as normal, ignoring armor and shields to hit health.
+	/// 
+	/// ```ini
+	/// [XComGame.X2Effect_ApplyWeaponDamage]
+	/// ; Issue 743
+	/// ; Set to false/commented out if you want damage to hit shields/ablative, then armor, then health (vanilla behaviour)
+	/// ; Set to true/uncomment it if you want damage to hit armor, then shield/ablative, then health
+	/// ;ARMOR_BEFORE_SHIELD=true
+	/// ```
+	if ((ShieldHP > 0) && !bIgnoreShields) // If there is a shield
 	{
-		DamageAmountBeforeArmor = DamageAmount + MitigationAmount;
-		DamageAmountBeforeArmorMinusShield = DamageAmountBeforeArmor - ShieldHP;
-
-		if (DamageAmountBeforeArmorMinusShield > 0) //partial shield, needs to recompute armor
+		if (class'X2Effect_ApplyWeaponDamage'.default.ARMOR_BEFORE_SHIELD) // Armor should take damage before shield, then spill to HP
 		{
-			DamageAbsorbedByShield = ShieldHP;  //The shield took as much damage as possible
-			PostShield_MitigationAmount = DamageAmountBeforeArmorMinusShield;
-			if (PostShield_MitigationAmount > MitigationAmount) //damage is more than what armor can take
+			`COMBATLOG("Beginning Armor-Shield-Health Processing!");
+			`COMBATLOG("Incoming Damage: " $ (DamageAmount + MitigationAmount));
+			`COMBATLOG("Armor Mitigation: " $ MitigationAmount);
+			`COMBATLOG("Armor Shredded: " $ ShredAmount);
+			`COMBATLOG("Leaking Damage: " $ DamageAmount);
+
+			if (DamageAmount > 0)
 			{
-				PostShield_DamageAmount = (DamageAmountBeforeArmorMinusShield - MitigationAmount);
-				PostShield_MitigationAmount = MitigationAmount;
+				if (DamageAmount < ShieldHP) // If shield survives damage
+				{
+					`COMBATLOG("Shield taking damage but unbroken!");
+					PostShield_DamageAmount = 0;
+					DamageAbsorbedByShield = DamageAmount;
+				}
+				else // If shield is broken by damage
+				{
+					`COMBATLOG("Shield broken by incoming damage!");
+					PostShield_DamageAmount = DamageAmount - ShieldHP;
+					DamageAbsorbedByShield = ShieldHP;
+				}
 			}
-			else //Armor takes the rest of the damage
+			else // If armor has tanked all damage
 			{
+				`COMBATLOG("Armor layer held all damage!");
 				PostShield_DamageAmount = 0;
+				DamageAbsorbedByShield = 0;
 			}
 
-			// Armor is taking damage, which might cause shred. We shouldn't shred more than the
-			// amount of armor used.
-			PostShield_ShredAmount = min(PostShield_ShredAmount, PostShield_MitigationAmount);
+			`COMBATLOG("Shield Damage: " $ DamageAbsorbedByShield);
+			`COMBATLOG("Health Damage: " $ PostShield_DamageAmount);
 		}
-		else //shield took all, armor doesn't need to take any
+		else // Shield should take all damage from both armor and HP, before spilling back to armor and HP
 		{
-			PostShield_MitigationAmount = 0;
-			PostShield_DamageAmount = 0;
-			DamageAbsorbedByShield = DamageAmountBeforeArmor;  //The shield took a partial hit from the damage
-			PostShield_ShredAmount = 0;
+			DamageAmountBeforeArmor = DamageAmount + MitigationAmount;
+			DamageAmountBeforeArmorMinusShield = DamageAmountBeforeArmor - ShieldHP;
+
+			if (DamageAmountBeforeArmorMinusShield > 0) //partial shield, needs to recompute armor
+			{
+				DamageAbsorbedByShield = ShieldHP;  //The shield took as much damage as possible
+				PostShield_MitigationAmount = DamageAmountBeforeArmorMinusShield;
+				if (PostShield_MitigationAmount > MitigationAmount) //damage is more than what armor can take
+				{
+					PostShield_DamageAmount = (DamageAmountBeforeArmorMinusShield - MitigationAmount);
+					PostShield_MitigationAmount = MitigationAmount;
+				}
+				else //Armor takes the rest of the damage
+				{
+					PostShield_DamageAmount = 0;
+				}
+
+				// Armor is taking damage, which might cause shred. We shouldn't shred more than the
+				// amount of armor used.
+				PostShield_ShredAmount = min(PostShield_ShredAmount, PostShield_MitigationAmount);
+			}
+			else //shield took all, armor doesn't need to take any
+			{
+				PostShield_MitigationAmount = 0;
+				PostShield_DamageAmount = 0;
+				DamageAbsorbedByShield = DamageAmountBeforeArmor;  //The shield took a partial hit from the damage
+				PostShield_ShredAmount = 0;
+			}
 		}
 	}
+	// End Issue #743
 
 	AddShreddedValue(PostShield_ShredAmount);  // Add the new PostShield_ShredAmount
 
