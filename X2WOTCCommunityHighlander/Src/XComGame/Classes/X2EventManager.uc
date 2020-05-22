@@ -265,7 +265,17 @@ native function bool IsRegistered( const ref Object SourceObject, Name EventID, 
  *
  *  @return TRUE iff any event listener with ELD_Immediate specified for this event executes and causes an event interrupt
  */
-native function bool TriggerEvent( Name EventID, optional Object EventData, optional Object EventSource, optional XComGameState EventGameState );
+/*native*/ function bool TriggerEvent( Name EventID, optional Object EventData, optional Object EventSource, optional XComGameState EventGameState )
+{
+	`log("====================",, 'ShellEventDebug');
+	`log("  EventID:" @ EventId,, 'ShellEventDebug');
+	`log("  EventData:" @ (EventData == none ? "none" : string(EventData.Name)),, 'ShellEventDebug');
+	`log("  EventSource:" @ (EventSource == none ? "none" : string(EventSource.Name)),, 'ShellEventDebug');
+	`log("  EventGameState:" @ (EventGameState == none ? "none" : string(EventGameState.Name)),, 'ShellEventDebug');
+	`log("====================",, 'ShellEventDebug');
+
+	return false;
+}
 
 /**
  *  Triggers the ELD_OnStateSubmitted event window.

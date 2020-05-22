@@ -113,6 +113,16 @@ static function XComGameState CreateStrategyGameStart(
 	local int Seed;
 	local bool NewCampaign;
 
+	`log("=============================================================================================",, 'ShellEventDebug');
+	`log("Entered CreateStrategyGameStart",, 'ShellEventDebug');
+	`log("StartState is" @ (StartState == none ? "" : "not ") $ "none",, 'ShellEventDebug');
+	`log("====================================================",, 'ShellEventDebug');
+	`log("Current event listeners",, 'ShellEventDebug');
+	`log(`XEVENTMGR.AllEventListenersToString(),, 'ShellEventDebug');
+	`log("====================================================",, 'ShellEventDebug');
+	`log("Triggered events:",, 'ShellEventDebug');
+	
+
 	NewCampaign = false;
 	if( StartState == None )
 	{
@@ -227,6 +237,10 @@ static function XComGameState CreateStrategyGameStart(
 			DLCInfos[i].InstallNewCampaign(StartState);
 		}
 	}
+
+	`log("====================================================",, 'ShellEventDebug');
+	`log("Exited CreateStrategyGameStart",, 'ShellEventDebug');
+	`log("=============================================================================================",, 'ShellEventDebug');
 
 	return StartState;
 }
