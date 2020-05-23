@@ -762,3 +762,26 @@ final function string GetDisplayName()
 	return ModDependency.DisplayName;
 }
 /// End Issue #524
+
+// Start issue #808
+/// HL-Docs: feature:OnLoadedSavedGameWithDLCExisting; issue:808; tags:
+/// Base game provides the OnLoadedSavedGame hook, which is called only when the mod is added to an in-progress campaign for the first time.
+/// However, there are cases when the mods need to react to save loads for existing campaigns.
+/// An example would be making state changes due to updates in the mod.
+///
+/// Important note 1: this will not be called when the base game OnLoadedSavedGame is called (first time adding).
+/// 
+/// Important note 2: this (and the base game OnLoadedSavedGame) is called before the ruleset of the save is initialized.
+/// This is great as any state changes done here will be picked up automatically (no need to refresh anything anywhere),
+/// however it imposes several limitations:
+///
+/// 1) You cannot use `SubmitGameStateContext`/`SubmitGameState`. Use `XComGameStateHistory::AddGameStateToHistory` instead
+/// 2) Event listener templates should be assumed as not registered
+/// 3) In fact, due to (1), only `ELD_Immediate` listeners (that are registered on state objects) will be triggered.
+///    Therefore, you are advised to not trigger any events at all.
+///
+/// If the above is too limiting for your use case, consider using `OnLoadedSavedGameToStrategy`/`OnLoadedSavedGameToTactical`.
+static function OnLoadedSavedGameWithDLCExisting ()
+{
+}
+// End issue #808
