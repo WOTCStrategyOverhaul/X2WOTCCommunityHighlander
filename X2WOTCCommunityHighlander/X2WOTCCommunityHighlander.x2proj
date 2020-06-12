@@ -358,6 +358,9 @@
     <Content Include="Src\XComGame\Classes\UIUtilities_Colors.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2Action_Fire.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2AIBTBehaviorTree.uc">
       <SubType>Content</SubType>
     </Content>
@@ -463,6 +466,9 @@
     <Content Include="Src\XComGame\Classes\X2StrategyGame_SimCombat.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2SwordSliceSlashPathingPawn.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2TacticalGameRuleset.uc">
       <SubType>Content</SubType>
     </Content>
@@ -470,6 +476,12 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2TargetingMethod_EvacZone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2TargetingMethod_MeleePath.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2TargetingMethod_PathTarget.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2TargetingMethod_RocketLauncher.uc">
@@ -593,6 +605,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XComParcelManager.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\XComPathingPawn.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XComSoundManager.uc">
