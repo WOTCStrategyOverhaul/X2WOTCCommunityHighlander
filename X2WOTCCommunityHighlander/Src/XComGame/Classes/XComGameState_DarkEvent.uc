@@ -24,10 +24,10 @@ var float							   TimeRemaining;
 var StrategyCost					   RevealCost;
 
 // Issue #596
-/// HL-Docs: feature:TemporarilyBlockDarkEventActivation; issue:597; tags:strategy,compat
+/// HL-Docs: feature:TemporarilyBlockDarkEventActivation; issue:597; tags:strategy
 /// While this flag is turned on, the dark event cannot activate/complete (transition from preparing to active)
 /// and will simply "wait" until this flag is turned off. Another possible way of looking at it 
-/// is that the DE is postponed indefinetly while this flag is active but only if the EndDateTime was reached.
+/// is that the DE is postponed indefinitely while this flag is active but only if the EndDateTime was reached.
 /// HL-Include:
 var bool							   bTemporarilyBlockActivation;
 ///
@@ -231,10 +231,10 @@ function OnDeactivated(XComGameState NewGameState)
 	/// or an ELD_OnStateSubmitted listener if you want the state *after* the full
 	/// deactivation.
 	///
-	/// ```unrealscript
-	/// EventID: PreDarkEventDeactivated
-	/// EventData: XCGS_DarkEvent
-	/// EventSource: XCGS_DarkEvent
+	/// ```event
+	/// EventID: PreDarkEventDeactivated,
+	/// EventData: XComGameState_DarkEvent (EventState),
+	/// EventSource: XComGameState_DarkEvent,
 	/// NewGameState: yes
 	/// ```
 	`XEVENTMGR.TriggerEvent('PreDarkEventDeactivated', self, self, NewGameState);

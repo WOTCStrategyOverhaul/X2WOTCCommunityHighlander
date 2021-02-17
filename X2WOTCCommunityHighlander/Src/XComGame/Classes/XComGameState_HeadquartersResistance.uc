@@ -1645,6 +1645,7 @@ function FindRookieCovertActions()
 		if (
 			!ActionTemplate.bGoldenPath
 			&& ActionTemplate.RequiredFactionInfluence == eFactionInfluence_Minimal
+			/// HL-Docs: ref:CanNeverBeRookieCovertAction 
 			&& !ActionTemplate.bCanNeverBeRookie // Issue #695
 		)
 		{
