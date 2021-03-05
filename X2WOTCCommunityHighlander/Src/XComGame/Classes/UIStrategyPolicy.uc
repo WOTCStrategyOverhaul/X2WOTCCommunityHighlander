@@ -365,6 +365,8 @@ function RefreshAllDecks()
 	local array<StateObjectReference> HandCards, ListCards;
 	local int idx;
 
+	`XEVENTMGR.TriggerEvent('UIStrategyPolicy_PreRefreshAllDecks',, self);
+
 	ResHQ = GetResistanceHQ();
 	HandCards = ResHQ.GetHandCards();
 
@@ -852,6 +854,8 @@ function RealizeColumn(UIList Column, array<StateObjectReference> ColumnSlots, i
 	{
 		CreateLockedCard(Column, LockedSlotLabel);
 	}
+
+	`XEVENTMGR.TriggerEvent('UIStrategyPolicy_PostRealizeColumn', Column, self);
 }
 
 function XComGameState_StrategyCard GetCardState(StateObjectReference CardRef)
@@ -1226,12 +1230,16 @@ simulated function SelectCardInDeck(int newIndex)
 
 simulated function Select(UIStrategyPolicy_Card TargetCard)
 {
+	`XEVENTMGR.TriggerEvent('UIStrategyPolicy_PreSelect', TargetCard, self);
+
 	`XSTRATEGYSOUNDMGR.PlayPersistentSoundEvent("ResistanceOrders_CardMouseover");
 	MC.FunctionString("Select", string(TargetCard.MCPath));
 }
 
 simulated function ClearSelection()
 {
+	`XEVENTMGR.TriggerEvent('UIStrategyPolicy_PreClearSelection',, self);
+
 	MC.FunctionVoid("ClearSelection");
 }
 
@@ -1526,6 +1534,8 @@ function BeginDrag()
 		MC.FunctionVoid("BeginDrag");
 		bDragging = true;
 		HighlightPotentialDropSpots(true);
+
+		`XEVENTMGR.TriggerEvent('UIStrategyPolicy_DraggingStarted',, self);
 	}
 }
 
@@ -1537,6 +1547,8 @@ function EndDrag(bool bAnimate)
 		MC.FunctionBool("EndDrag", bAnimate);
 		bDragging = false;
 		HighlightPotentialDropSpots(false);
+
+		`XEVENTMGR.TriggerEvent('UIStrategyPolicy_DraggingEnded',, self);
 	}
 }
 
