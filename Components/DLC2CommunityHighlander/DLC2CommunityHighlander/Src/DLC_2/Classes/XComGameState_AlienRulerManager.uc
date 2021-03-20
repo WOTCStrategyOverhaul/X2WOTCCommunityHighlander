@@ -679,7 +679,8 @@ private function SetRulerOnCurrentMission(XComGameState NewGameState, XComGameSt
 }
 
 //---------------------------------------------------------------------------------------
-private function bool AreAlienRulersAllowedToSpawn()
+// Issue #988 - unprivated the function
+/*private*/ function bool AreAlienRulersAllowedToSpawn()
 {
 	local XComGameStateHistory History;
 	local XComGameState_CampaignSettings CampaignSettings;
