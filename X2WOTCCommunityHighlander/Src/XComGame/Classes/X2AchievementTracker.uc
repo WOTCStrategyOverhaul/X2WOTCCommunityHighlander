@@ -756,7 +756,7 @@ static function FinalMissionOnSuccess()
 	{
 		`ONLINEEVENTMGR.UnlockAchievement(AT_OverthrowClassic); // Overthrow the aliens on Classic difficulty
 		
-		if (!HasIncreasedSquadSize()) // Beat the game on Classic+ difficulty without buying a Squad Size upgrade
+		if (AllowNoSquadSizeUpgradeAchievement()) // Beat the game on Classic+ difficulty without buying a Squad Size upgrade
 		{
 			`ONLINEEVENTMGR.UnlockAchievement(AT_WinGameClassicWithoutBuyingUpgrade);
 		}
@@ -826,17 +826,17 @@ static function FinalMissionOnSuccess()
 	}
 }
 
-static function bool HasIncreasedSquadSize()
+static function bool AllowNoSquadSizeUpgradeAchievement()
 {
 	local XComLWTuple Tuple;
 
 	Tuple = new class'XComLWTuple';
-	Tuple.Id = 'HasIncreasedSquadSize';
+	Tuple.Id = 'AllowNoSquadSizeUpgradeAchievement';
 	Tuple.Data.Add(1);
 	Tuple.Data[0].kind = XComLWTVBool;
-	Tuple.Data[0].b = class'X2StrategyGameRulesetDataStructures'.static.HasSquadSizeUpgrade();
+	Tuple.Data[0].b = !class'X2StrategyGameRulesetDataStructures'.static.HasSquadSizeUpgrade();
 
-	`XEVENTMGR.TriggerEvent('HasIncreasedSquadSize', Tuple);
+	`XEVENTMGR.TriggerEvent('AllowNoSquadSizeUpgradeAchievement', Tuple);
 
 	return Tuple.Data[0].b;
 }
