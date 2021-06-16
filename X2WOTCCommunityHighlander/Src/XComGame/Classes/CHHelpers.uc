@@ -1,13 +1,21 @@
 class CHHelpers extends Object config(Game);
 
-//issue #188 - creating a struct and usable array for modders
+//issue #188 - creating a struct and a usable array for modders
 struct TeamRequest
 {
 	var ETeam Team; //eTeam_One and eTeam_Two should be the only ones here.
 };
-
 var config array<TeamRequest> ModAddedTeams;
 //end issue #188
+
+// Start Issue #93
+struct UpgradeSlotHelper
+{
+	var name TemplateName; // Name of the non-X2WeaponTemplate to be assigned slots (X2WeaponTemplates have NumUpgradeSlots on the template)
+	var int NumUpgradeSlots; // The number of slots to assign
+};
+var config array<UpgradeSlotHelper> NonWeaponUpgradeSlots; // Issue #93 - configure upgrade slots for templates
+// End Issue #93
 
 var config int SPAWN_EXTRA_TILE; // Issue #18 - Add extra ini config
 var config int MAX_TACTICAL_AUTOSAVES; // Issue #53 - make configurable, only use if over 0
@@ -128,6 +136,7 @@ var config(Content) array<name> FlagMaterial;
 var config bool PreserveProxyUnitData;
 // End Issue #465
 // Start Issue #317
+/// HL-Docs: ref:PersonalitySpeech
 struct CharSpeachLookup
 {
 	var name CharSpeech;
@@ -195,6 +204,25 @@ var config name PlaceEvacZoneAbilityName;
 
 // Variable for Issue #854
 var config float CameraRotationAngle;
+
+// Start Issue #669
+//
+/// HL-Docs: feature:GrenadesRequiringUnitsOnTargetedTiles; issue:669; tags:tactical
+/// An array of grenade template names for which only units actually on
+/// painted tiles should be affected by that grenade. Main example is
+/// smoke, since only units on smoked tiles should get the effect.
+var config array<name> GrenadesRequiringUnitsOnTargetedTiles;
+
+/// HL-Docs: feature:DisableExtraLOSCheckForSmoke; issue:669; tags:tactical
+/// When true, this option fixes smoke so that it applies to all tiles that
+/// are highlighted in targeting (as per the Reliable Smoke mod).
+var config bool DisableExtraLOSCheckForSmoke;
+
+/// HL-Docs: feature:DisableExtraLOSCheckForPoison; issue:669; tags:tactical
+/// When true, this option fixes poison so that clouds of it apply to all
+/// tiles that are highlighted in targeting.
+var config bool DisableExtraLOSCheckForPoison;
+// End Issue #669
 
 // Start Issue #885
 enum EHLDelegateReturn

@@ -114,10 +114,10 @@ function DistributeTacticalGameEndXp(XComGameState NewGameState)
 	/// XP than just kills. Mission XP (XP that's gained by just going on a mission)
 	/// is a good example.
 	///
-	/// ```unrealscript
-	/// EventID: OnDistributeTacticalGameEndXp
-	/// EventData: XCGS_HeadquartersXCom
-	/// EventSource: XCGS_XpManager
+	/// ```event
+	/// EventID: OnDistributeTacticalGameEndXp,
+	/// EventData: XComGameState_HeadquartersXCom,
+	/// EventSource: XComGameState_XpManager (XpMgr),
 	/// NewGameState: yes
 	/// ```
 	`XEVENTMGR.TriggerEvent('OnDistributeTacticalGameEndXp', XComHQ, self, NewGameState);

@@ -460,7 +460,13 @@ function UpdateRulerSpawningData(XComGameState NewGameState, XComGameState_Missi
 			foreach ActiveAlienRulers(RulerRef)
 			{
 				// Make sure that the ruler is not waiting at a specific location
-				if (AlienRulerLocations.Find('RulerRef', RulerRef) == INDEX_NONE && TriggerAllowRulerOnMission(NewGameState, RulerRef, MissionState))
+				if (
+					AlienRulerLocations.Find('RulerRef', RulerRef) == INDEX_NONE
+
+					// Issue #791
+					/// HL-Docs: ref:AllowRulerOnMission
+					&& TriggerAllowRulerOnMission(NewGameState, RulerRef, MissionState)
+				)
 				{
 					// If the ruler is active and not at a specific location, it can appear on normal missions
 					UnitState = XComGameState_Unit(History.GetGameStateForObjectID(RulerRef.ObjectID));					
@@ -478,20 +484,18 @@ function UpdateRulerSpawningData(XComGameState NewGameState, XComGameState_Missi
 }
 
 // Start issue #791
-/// HL-Docs: feature:AllowRulerOnMission; issue:791; tags:strategy,dlc2,events
-/// Allows listeners to forbid a particular (or all) rulers from a particular XComGameState_MissionSite.
+/// HL-Docs: feature:AllowRulerOnMission; issue:791; tags:strategy,dlc2
+/// Allows listeners to forbid a particular (or all) rulers from a particular `XComGameState_MissionSite`.
 //
-/// Be aware that the AlienRulerLocations system completely bypasses this check (doesn't trigger this event)
+/// Be aware that the AlienRulerLocations system completely bypasses this check (doesn't trigger this event).
 ///
-/// ```unrealscript
-/// EventID: AllowRulerOnMission
-/// EventData: XComLWTuple {
-///     Data: [
-///       inout bool bAllowRuler,
-///       in int RulerObjectID
-///     ]
-/// }
-/// EventSource: XComGameState_MissionSite
+/// ```event
+/// EventID: AllowRulerOnMission,
+/// EventData: [
+///    inout bool bAllowRuler,
+///    in int RulerObjectID
+/// ],
+/// EventSource: XComGameState_MissionSite (MissionState),
 /// NewGameState: yes
 /// ```
 private function bool TriggerAllowRulerOnMission (XComGameState NewGameState, StateObjectReference RulerRef, XComGameState_MissionSite MissionState)
@@ -741,12 +745,12 @@ private function StateObjectReference GetRulerLocatedAtMission(XComGameState_Mis
 	// If DLC is integrated with the XPack, rulers only appear for the first time on specific missions
 	// Issue #771 - removed this check. It's useless anyway as without the xpack integration enabled AlienRulerLocations will never be populated
 	/// HL-Docs: feature:NonIntegratedAlienRulerLocations; issue:771; tags:strategy,dlc2
-	/// Mods can force a specific ruler to be present on a specific mission using XComGameState_AlienRulerManager::AlienRulerLocations -
+	/// Mods can force a specific ruler to be present on a specific mission using `XComGameState_AlienRulerManager::AlienRulerLocations` -
 	/// the same mechanism that XPACK integration uses/introduces to make rulers wait in specific alien facilities.
 	///
 	/// This could be done even without the CHL patch, but it wouldn't work if DLC is not run in the integrated mode.
 	/// With this CHL patch, you can use that mechanism safely in both integrated and non-integrated mode.
-	/// Note that when the non-integrated mode is enabled, the AlienRulerLocations array is not populated by the DLC
+	/// Note that when the non-integrated mode is enabled, the AlienRulerLocations array is not populated by the DLC.
 	///
 	/// Example usage:
 	/// ```unreascript

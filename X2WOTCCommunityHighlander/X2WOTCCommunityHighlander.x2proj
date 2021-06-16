@@ -82,6 +82,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\X2WOTCCommunityHighlander\Classes\X2DownloadableContentInfo_X2WOTCCommunityHighlander.uc" />
+    <Content Include="Src\X2WOTCCommunityHighlander\Classes\X2WOTCCH_UIScreenListener_Shell_DLCIntro.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\AnalyticsManager.uc">
       <SubType>Content</SubType>
     </Content>
@@ -89,6 +92,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\CHDLCRunOrder.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\CHDLCRunOrderDiagnostic.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\CHEventListenerTemplate.uc">
@@ -116,9 +122,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\CHXComGameVersionTemplate.uc">
-      <SubType>Content</SubType>
-    </Content>
-    <Content Include="Src\XComGame\Classes\CHDLCInfoTopologicalOrderNode.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\Helpers.uc">
@@ -427,10 +430,22 @@
     <Content Include="Src\XComGame\Classes\X2Action_Death.uc">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Src\XComGame\Classes\X2Effect_ApplyPoisonToWorld.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2Effect_ApplySmokeGrenadeToWorld.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2Effect_ApplySmokeToWorld.uc">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Src\XComGame\Classes\X2Effect_ApplyWeaponDamage.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2Effect_Burning.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2Effect_LaserSight.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2EncyclopediaTemplate.uc">
@@ -470,6 +485,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2SitRepTemplate.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2SoldierClassTemplate.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2SoldierClassTemplateManager.uc">
@@ -518,6 +536,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2TargetingMethod_EvacZone.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\X2TargetingMethod_Grenade.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\X2TargetingMethod_MeleePath.uc">
@@ -605,7 +626,7 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XComGameState_HeadquartersProjectRecoverWill.uc">
-          <SubType>Content</SubType>
+      <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XComGameState_HeadquartersProjectRespecSoldier.uc">
       <SubType>Content</SubType>
@@ -629,6 +650,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XComGameState_MissionSite.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\XComGameState_RegionLink.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XComGameState_ResistanceFaction.uc">
@@ -695,6 +719,15 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XGCharacterGenerator.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\XGCharacterGenerator_Reaper.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\XGCharacterGenerator_Skirmisher.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\XComGame\Classes\XGCharacterGenerator_Templar.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\XComGame\Classes\XGGeoscape.uc">
@@ -812,65 +845,14 @@
       <SubType>Content</SubType>
     </Content>
   </ItemGroup>
-  <!--<Import Project="$(MSBuildLocalExtensionPath)\XCOM2.targets" />-->
-  <!-- The weird stuff below (until Target) is required or otherwise ModBuddy project breaks ¯\_(ツ)_/¯ P.S. Also don't try to make it more sane -->
   <PropertyGroup>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(XCOM2_GamePath)\..\Binaries\Win64\Launcher\StartDebugging.bat</StartProgram>
+    <SolutionRoot>$(MSBuildProjectDirectory)\..\</SolutionRoot>
+    <ScriptsDir>$(SolutionRoot).scripts\</ScriptsDir>
+    <BuildCommonRoot>$(ScriptsDir)X2ModBuildCommon\</BuildCommonRoot>
+    <!-- Default and debug are handeled by the .targets automatically -->
+    <BuildEntryConfig Condition=" '$(Configuration)' == 'Final release' ">final_release</BuildEntryConfig>
+    <BuildEntryConfig Condition=" '$(Configuration)' == 'Compiletest' ">compiletest</BuildEntryConfig>
+    <BuildEntryConfig Condition=" '$(Configuration)' == 'Workshop stable version' ">stable</BuildEntryConfig>
   </PropertyGroup>
-  <PropertyGroup>
-    <OutputPath>.</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Default|XCOM 2' ">
-    <OutputPath>.</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ProjectDir Condition="'$(BuildPath)'==''">$(MSBuildProjectDirectory)</ProjectDir>
-    <ModsDir>$(XCOM2_UserPath)\Mods\</ModsDir>
-    <OutputDir>$(ModsDir)$(SafeName)\</OutputDir>
-  </PropertyGroup>
-  <!-- Custom properties -->
-  <PropertyGroup>
-    <GameInstallPath>$(XCOM2_GamePath)..\\</GameInstallPath>
-    <SDKInstallPath>$(XCOM2_UserPath)..\\</SDKInstallPath>
-    <SolutionRoot>$(MSBuildProjectDirectory)\..\\</SolutionRoot>
-    <ScriptsDir>$(SolutionRoot).scripts\\</ScriptsDir>
-  </PropertyGroup>
-  <!-- Per-config options -->
-  <PropertyGroup>
-    <PowershellBuildCommand>powershell.exe –NonInteractive –ExecutionPolicy Unrestricted  -file "$(ScriptsDir)build.ps1" -mod "X2WOTCCommunityHighlander" -srcDirectory "$(SolutionRoot)" -sdkPath "$(SDKInstallPath)" -gamePath "$(GameInstallPath)"</PowershellBuildCommand>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Final release' ">
-    <OutputPath>.</OutputPath>
-    <PowershellBuildCommand>powershell.exe –NonInteractive –ExecutionPolicy Unrestricted  -file "$(ScriptsDir)build.ps1" -mod "X2WOTCCommunityHighlander" -srcDirectory "$(SolutionRoot)" -sdkPath "$(SDKInstallPath)" -gamePath "$(GameInstallPath)" -final_release</PowershellBuildCommand>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>.</OutputPath>
-    <PowershellBuildCommand>powershell.exe –NonInteractive –ExecutionPolicy Unrestricted  -file "$(ScriptsDir)build.ps1" -mod "X2WOTCCommunityHighlander" -srcDirectory "$(SolutionRoot)" -sdkPath "$(SDKInstallPath)" -gamePath "$(GameInstallPath)" -debug</PowershellBuildCommand>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Compiletest' ">
-    <OutputPath>.</OutputPath>
-    <PowershellBuildCommand>powershell.exe –NonInteractive –ExecutionPolicy Unrestricted  -file "$(ScriptsDir)build.ps1" -mod "X2WOTCCommunityHighlander" -srcDirectory "$(SolutionRoot)" -sdkPath "$(SDKInstallPath)" -gamePath "$(GameInstallPath)" -debug -include_compiletest</PowershellBuildCommand>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Workshop stable version' ">
-    <OutputPath>.</OutputPath>
-    <PowershellBuildCommand>powershell.exe –NonInteractive –ExecutionPolicy Unrestricted  -file "$(ScriptsDir)build.ps1" -mod "X2WOTCCommunityHighlander" -srcDirectory "$(SolutionRoot)" -sdkPath "$(SDKInstallPath)" -gamePath "$(GameInstallPath)" -final_release -stableModId</PowershellBuildCommand>
-  </PropertyGroup>
-  <!--Build targets -->
-  <Target Name="Clean">
-    <Message Text="Cleaning Mod project..." />
-    <RemoveDir Directories="$(OutputDir)" />
-  </Target>
-  <Target Name="ReBuild">
-    <Message Text="Rebuilding Mod project..." />
-    <CallTarget Targets="Clean" />
-    <CallTarget Targets="Default" />
-  </Target>
-  <Target Name="BuildCustom">
-    <Message Text="Starting custom build $(Configuration)" />
-    <Exec Command="$(PowershellBuildCommand)" />
-  </Target>
-  <Target Name="Default" DependsOnTargets="BuildCustom">
-    <!-- Do nothing. All actual work is done in the "BuildCustom" task. -->
-  </Target>
+  <Import Project="$(BuildCommonRoot)XCOM2.targets" />
 </Project>

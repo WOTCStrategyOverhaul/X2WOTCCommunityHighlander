@@ -11,8 +11,17 @@ class UIStrategyPolicy extends UIScreen
 	dependson(UIDialogueBox, UIStrategyPolicy_Card);
 
 /// HL-Docs: feature:UIStrategyPolicy_MiscEvents; issue:986; tags:strategy,ui
-/// Various miscellaneous events that you can use however you want.
-/// Check the tracking issue for details on how these came to be.
+/// `UIStrategyPolicy` is the screen that allows players to allocate
+/// resistance orders at end of "month". The Community Highlander adds
+/// the following events to that screen so mods have more options for
+/// modifying it without overriding it entirely.
+///
+/// See the tracking issue for background on why these events were
+/// added, and hence a potential use for them.
+///
+/// **Note** You'll need to look at the code for `UIStrategyPolicy` in
+/// order to understand when these events are fired, and hence which
+/// ones you'll need for your own customisations.
 ///
 /// ```event
 /// EventID: UIStrategyPolicy_PreRefreshAllDecks,

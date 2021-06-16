@@ -1,4 +1,4 @@
-// Used to show a warning when the player is missing the main CHL
+// Used to show a warning when the player is missing the game CHL
 // Not part of the public API - mods should not rely on its existence
 
 class CHDLC2UIListener_Shell extends UIScreenListener;
@@ -12,22 +12,20 @@ event OnInit (UIScreen Screen)
 
 	if (
 		class'CHXComGameVersionTemplate' == none && // We depend on the XComGame replacement, so check that mainly
-		!IsDLCLoaded("X2WOTCCommunityHighlander") // However, do not complain when the companion package is loaded - it will handle the complaining
+		FindObject("X2WOTCCommunityHighlander.X2WOTCCH_Components", class'Class') == none // However, do not complain when the companion package is loaded - it will handle the complaining
 
-		// Note that the replacement may be present without the companion when running with -noSeekFreeLoading and the last mod compiled was not the main CHL
+		// Note 1) the XComGame replacement may be present without the companion when running with -noSeekFreeLoading and the last mod compiled was not the main CHL
+		// Note 2) we don't want an import (reference) to the X2WOTCCommunityHighlander package, so we can't use the class'' syntax in the check
 	)
 	{
 		Screen.SetTimer(1.0, false, nameof(ShowMissingCHL), self);
+
+		`log(" ",, 'CHDLC2');
+		`log(" ",, 'CHDLC2');
+		`log("FATAL: Core X2WOTCCommunityHighlander is missing, will crash during gameplay!",, 'CHDLC2');
+		`log(" ",, 'CHDLC2');
+		`log(" ",, 'CHDLC2');
 	}
-}
-
-static private function bool IsDLCLoaded (coerce string DLCName)
-{
-	local array<string> DLCs;
-  
-	DLCs = class'Helpers'.static.GetInstalledDLCNames();
-
-	return DLCs.Find(DLCName) != INDEX_NONE;
 }
 
 simulated private function ShowMissingCHL ()

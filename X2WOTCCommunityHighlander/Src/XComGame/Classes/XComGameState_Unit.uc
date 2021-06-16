@@ -6943,18 +6943,17 @@ protected function OnUnitDied(XComGameState NewGameState, Object CauseOfDeath, c
 /// like, the XP granted for assists, and any Wet Work bonus. Mods can even
 /// set these values to zero to prevent XP gain.
 ///
-/// ```unrealscript
-/// EventID: OverrideKillXp
-/// EventData: XComLWTuple {
-///     Data: [
+/// This event is called no more than once for each kill.
+///
+/// ```event
+/// EventID: OverrideKillXp,
+/// EventData: [
 ///       inout float KillXp,
 ///       inout float BonusKillXp,
 ///       inout float KillAssistXp,
 ///       inout int WetWorkXp,
-///       in XCGS_Unit Killer
-///     ]
-/// }
-/// EventSource: KilledUnit (XCGS_Unit)
+///       in XComGameState_Unit Killer ],
+/// EventSource: XComGameState_Unit (KilledUnit),
 /// NewGameState: yes
 /// ```
 ///
@@ -13016,15 +13015,11 @@ function int GetTotalNumKills(optional bool bIncludeNonTacticalKills = true)
 /// One example use case is to provide an additional source of XP, such
 /// as simply going on a mission.
 ///
-/// ```unrealscript
-/// EventID: OverrideTotalNumKills
-/// EventData: XComLWTuple {
-///     Data: [
-///       inout int TotalNumKills
-///     ]
-/// }
-/// EventSource: XCGS_Unit
-/// NewGameState: no
+/// ```event
+/// EventID: OverrideTotalNumKills,
+/// EventData: [ inout int TotalNumKills ],
+/// EventSource: XComGameState_Unit (UnitState),
+/// NewGameState: none
 /// ```
 //
 // This function returns the total kill XP.
